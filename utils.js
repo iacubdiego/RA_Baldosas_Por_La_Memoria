@@ -107,10 +107,10 @@ function obtenerUbicacion(options = {}) {
 // ==================== TRACKING DE AR ====================
 
 /**
- * Configuración mejorada de tracking para MindAR
+ * Configuración de tracking para MindAR
  */
 const trackingConfig = {
-  // Más tolerante para condiciones variadas de iluminación
+  // Tolerante para condiciones variadas de iluminación
   filterMinCF: 0.0001,
   filterBeta: 0.001,
   

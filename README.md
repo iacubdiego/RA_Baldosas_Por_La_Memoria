@@ -4,10 +4,6 @@
 
 Experiencia de realidad aumentada para honrar la memoria de los detenidos-desaparecidos durante la dictadura cívico-militar argentina (1976-1983).
 
-## 🎯 Demo Rápido
-
-**[Ver Demo en Vivo](#)** ← (Actualiza este link después del deploy)
-
 ## ⚡ Inicio Rápido
 
 ### 📱 Cómo Usar la App:
@@ -35,46 +31,6 @@ Este MVP reconoce **2 baldosas específicas**:
 
 ---
 
-## 🚀 Deploy en Vercel
-
-### Método 1: Deploy Automático (Recomendado)
-
-1. **Fork este repositorio** en tu GitHub
-2. Ve a [vercel.com](https://vercel.com)
-3. Click en **"New Project"**
-4. Importa tu repositorio
-5. ⚠️ **ANTES de Deploy**: Lee la sección **"Paso Crítico"** abajo
-6. Click en **"Deploy"**
-
-### Método 2: Vercel CLI
-
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-### ⚠️ PASO CRÍTICO: Compilar Targets
-
-**El proyecto NO funcionará sin este paso:**
-
-1. Ve a: https://hiukim.github.io/mind-ar-js-doc/tools/compile
-2. Sube los archivos:
-   - `targets/baldosa3.jpg`
-   - `targets/baldosa4.jpg`
-3. Espera 1-2 minutos mientras compila
-4. Descarga `targets.mind`
-5. **ANTES de hacer commit/push**:
-   - Coloca `targets.mind` en la carpeta `/targets/`
-   - Haz commit y push
-
-```bash
-# Después de generar targets.mind:
-git add targets/targets.mind
-git commit -m "Add compiled targets"
-git push
-```
-
----
 
 ## 🧪 Testing Local
 
@@ -84,18 +40,6 @@ python -m http.server 8080
 # Abre: http://localhost:8080
 ```
 
-### Opción 2: Node.js
-```bash
-npx http-server -p 8080
-# Abre: http://localhost:8080
-```
-
-### Testing en Móvil (Local)
-1. Encuentra tu IP: `ipconfig` (Windows) o `ifconfig` (Mac/Linux)
-2. Abre en móvil: `http://TU-IP:8080`
-3. Acepta permisos de cámara y ubicación
-
----
 
 ## 📱 ¿Qué Verás en AR?
 
@@ -170,55 +114,3 @@ baldosas-ar/
 - **Vercel** - Hosting con HTTPS
 
 ---
-
-## 📐 Requisitos
-
-### Dispositivos:
-- 📱 Smartphone moderno (últimos 3 años)
-- 📱 Android 8+ o iOS 13+
-- 📷 Cámara de al menos 8MP
-
-### Navegadores:
-- ✅ Chrome (Android)
-- ✅ Safari (iOS)
-- ⚠️ Firefox (puede tener problemas)
-
-### Condiciones:
-- ☀️ Buena iluminación
-- 📡 Conexión a internet
-- ✅ Permisos de cámara y ubicación
-
----
-
-## 🐛 Troubleshooting
-
-### ❌ "Failed to load target"
-- Verifica que `targets.mind` existe en `/targets/`
-- Verifica que hiciste commit del archivo
-- Espera unos minutos después del deploy
-
-### ❌ Cámara no funciona
-- Verifica que diste permisos
-- Asegúrate de estar en HTTPS (Vercel lo hace automático)
-- Prueba en Chrome (Android) o Safari (iOS)
-
-### ❌ AR no aparece
-- Mejora la iluminación
-- Mantén la imagen completa en cuadro
-- Mantén la cámara estable 2-3 segundos
-- Verifica que sea la imagen correcta
-
----
-
-## 🙏 Agradecimientos
-
-A las Abuelas y Madres de Plaza de Mayo por su incansable búsqueda.  
-A Barrios x Memoria y Justicia por mantener viva la memoria.  
-A todos los que luchan para que **Nunca Más** se repita.
-
-**Memoria, Verdad y Justicia** 💛  
-**30.000 Presentes** 🕯️
-
----
-
-Hecho con 💛 para honrar la memoria - Noviembre 2025
