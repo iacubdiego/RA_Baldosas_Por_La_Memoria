@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Images - Baldosas AR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #8B0000;
+            text-align: center;
+        }
+        
+        .instrucciones {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .instrucciones h2 {
+            margin-top: 0;
+            color: #8B0000;
+        }
+        
+        .instrucciones ol {
+            line-height: 1.8;
+        }
+        
+        .baldosas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .baldosa-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .baldosa-card h3 {
+            color: #8B0000;
+            margin-top: 0;
+        }
+        
+        .baldosa-card img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .btn-descargar {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-imprimir {
+            background: #2196F3;
+            color: white;
+        }
+        
+        button:hover {
+            opacity: 0.8;
+        }
+        
+        .tip {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin-top: 20px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .instrucciones, .tip, button {
+                display: none;
+            }
+            .baldosa-card {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Imágenes de Prueba - Baldosas AR</h1>
+    
+    <div class="instrucciones">
+        <h2>📋 Instrucciones de Uso</h2>
+        <ol>
+            <li><strong>Descarga o Imprime</strong> las imágenes de las baldosas de abajo</li>
+            <li><strong>Abre la aplicación AR</strong> en tu dispositivo móvil</li>
+            <li><strong>Apunta la cámara</strong> a la imagen impresa o en otra pantalla</li>
+            <li>Verás aparecer la <strong>información en realidad aumentada</strong></li>
+        </ol>
+        
+        <div class="info">
+            <strong>💡 Consejo:</strong> Para mejores resultados, imprime las imágenes en tamaño A4 o muéstralas en una pantalla grande. Asegúrate de tener buena iluminación.
+        </div>
+    </div>
+    
+    <div class="baldosas-container">
+        <!-- Baldosa 3 -->
+        <div class="baldosa-card">
+            <h3>Baldosa 3: Nélida Ardito y Martha Brea</h3>
+            <p><strong>Tipo:</strong> Roja con mosaicos distribuidos</p>
+            <p><strong>Características:</strong></p>
+            <ul>
+                <li>Color base rojo terracota</li>
+                <li>Múltiples mosaicos coloridos</li>
+                <li>Logo "NUNCA MAS"</li>
+                <li>Lazo blanco</li>
+            </ul>
+            
+            <img src="./targets/baldosa3.jpg" alt="Baldosa 3" id="baldosa3">
+            
+            <div class="botones">
+                <button class="btn-descargar" onclick="descargarImagen('baldosa3', 'baldosa3.jpg')">
+                    📥 Descargar
+                </button>
+                <button class="btn-imprimir" onclick="imprimirImagen('baldosa3')">
+                    🖨️ Imprimir
+                </button>
+            </div>
+            
+            <div class="info" style="margin-top: 15px;">
+                <strong>Contenido AR:</strong> Información sobre Nélida Beatriz Ardito y Martha Maria Brea, militantes populares detenidas desaparecidas.
+            </div>
+        </div>
+        
+        <!-- Baldosa 4 -->
+        <div class="baldosa-card">
+            <h3>Baldosa 4: Roberto Fernando Tortora</h3>
+            <p><strong>Tipo:</strong> Roja con borde de mosaicos</p>
+            <p><strong>Características:</strong></p>
+            <ul>
+                <li>Color base rojo oscuro</li>
+                <li>Borde perimetral tipo mosaico</li>
+                <li>Fecha en amarillo "27-04-77"</li>
+                <li>Diseño simétrico</li>
+            </ul>
+            
+            <img src="./targets/baldosa4.jpg" alt="Baldosa 4" id="baldosa4">
+            
+            <div class="botones">
+                <button class="btn-descargar" onclick="descargarImagen('baldosa4', 'baldosa4.jpg')">
+                    📥 Descargar
+                </button>
+                <button class="btn-imprimir" onclick="imprimirImagen('baldosa4')">
+                    🖨️ Imprimir
+                </button>
+            </div>
+            
+            <div class="info" style="margin-top: 15px;">
+                <strong>Contenido AR:</strong> Historia de Roberto Fernando Tortora y Adriana Namio de Carlipparro, secuestrados el 27/04/77.
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip">
+        <h3>🔧 Tips para Desarrolladores</h3>
+        <ul>
+            <li><strong>Tamaño óptimo:</strong> Las imágenes deben tener al menos 480px de ancho</li>
+            <li><strong>Iluminación:</strong> El tracking funciona mejor con iluminación uniforme</li>
+            <li><strong>Ángulo:</strong> Mantén la cámara perpendicular a la imagen</li>
+            <li><strong>Distancia:</strong> Mantén la imagen completa en el encuadre</li>
+            <li><strong>Testing en Desktop:</strong> Puedes mostrar estas imágenes en un monitor y apuntar con tu móvil</li>
+        </ul>
+    </div>
+
+    <script>
+        function descargarImagen(id, nombre) {
+            const img = document.getElementById(id);
+            const link = document.createElement('a');
+            link.download = nombre;
+            link.href = img.src;
+            link.click();
+        }
+        
+        function imprimirImagen(id) {
+            const img = document.getElementById(id).cloneNode(true);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Imprimir Baldosa</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${img.outerHTML}
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() {
+                                window.close();
+                            }, 100);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    </script>
+</body>
+</html>

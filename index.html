@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <title>Baldosas por la Memoria - AR</title>
+    
+    <!-- MindAR Image Tracking -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      
+      .info-panel {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        z-index: 999;
+        max-width: 90%;
+        text-align: center;
+      }
+      
+      .info-panel h3 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+      }
+      
+      .info-panel p {
+        margin: 5px 0;
+        font-size: 12px;
+      }
+      
+      #loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="loading">
+      <p>Cargando experiencia AR...</p>
+      <p style="font-size: 12px;">Apunta la cámara a una baldosa</p>
+    </div>
+    
+    <div class="info-panel" id="info-panel" style="display: none;">
+      <h3 id="info-title">Baldosa Detectada</h3>
+      <p id="info-text">Información de la baldosa</p>
+      <p id="info-location" style="font-size: 10px; margin-top: 10px;"></p>
+    </div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets/targets.mind; maxTrack: 2; filterMinCF: 0.0001; filterBeta: 0.001;"
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-assets>
+        <img id="icon-memoria" src="./assets/icon-memoria.png" />
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
+
+      <!-- Target 0: Baldosa 3 (Roja con mosaicos distribuidos) -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Plano de fondo semi-transparente -->
+        <a-plane 
+          position="0 0 0" 
+          height="0.8" 
+          width="1.2" 
+          rotation="0 0 0"
+          color="#8B0000"
+          opacity="0.3">
+        </a-plane>
+        
+        <!-- Título -->
+        <a-text 
+          value="Aquí trabajaron\nMilitantes Populares" 
+          position="0 0.3 0" 
+          align="center" 
+          color="#FFFFFF" 
+          width="1.5"
+          font="roboto"
+          wrap-count="30">
+        </a-text>
+        
+        <!-- Nombres -->
+        <a-text 
+          value="Nélida Beatriz Ardito\nMartha Maria Brea" 
+          position="0 0 0" 
+          align="center" 
+          color="#FFEB3B" 
+          width="1.2"
+          wrap-count="30">
+        </a-text>
+        
+        <!-- Información adicional -->
+        <a-text 
+          value="Detenidas desaparecidas\npor el Terrorismo de Estado" 
+          position="0 -0.3 0" 
+          align="center" 
+          color="#FFFFFF" 
+          width="1.2"
+          scale="0.8 0.8 0.8"
+          wrap-count="35">
+        </a-text>
+      </a-entity>
+
+      <!-- Target 1: Baldosa 4 (Roja con borde de mosaicos) -->
+      <a-entity mindar-image-target="targetIndex: 1">
+        <!-- Plano de fondo -->
+        <a-plane 
+          position="0 0 0" 
+          height="0.8" 
+          width="1.2" 
+          rotation="0 0 0"
+          color="#8B0000"
+          opacity="0.3">
+        </a-plane>
+        
+        <!-- Título -->
+        <a-text 
+          value="Aquí vivió\nRoberto Fernando Tortora" 
+          position="0 0.3 0" 
+          align="center" 
+          color="#FFFFFF" 
+          width="1.5"
+          wrap-count="30">
+        </a-text>
+        
+        <!-- Fecha -->
+        <a-text 
+          value="27-04-77" 
+          position="0 0.05 0" 
+          align="center" 
+          color="#FFEB3B" 
+          width="1"
+          scale="1.2 1.2 1.2">
+        </a-text>
+        
+        <!-- Información adicional -->
+        <a-text 
+          value="Secuestrado junto a\nAdriana Namio de Carlipparro\nMilitante Popular\nDetenido Desaparecido" 
+          position="0 -0.25 0" 
+          align="center" 
+          color="#FFFFFF" 
+          width="1.2"
+          scale="0.75 0.75 0.75"
+          wrap-count="35">
+        </a-text>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Obtener geolocalización del usuario
+      let userLocation = null;
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              accuracy: position.coords.accuracy
+            };
+            console.log('Ubicación del usuario:', userLocation);
+            updateLocationInfo();
+          },
+          (error) => {
+            console.error('Error obteniendo geolocalización:', error);
+          }
+        );
+      }
+
+      // Base de datos simple de baldosas con ubicaciones aproximadas
+      const baldosasDB = {
+        0: {
+          nombre: "Baldosa Nélida Ardito y Martha Brea",
+          descripcion: "Aquí trabajaron Militantes Populares detenidas desaparecidas",
+          // Ubicación de ejemplo - deberías reemplazar con coordenadas reales
+          lat: -34.6037,
+          lng: -58.3816
+        },
+        1: {
+          nombre: "Baldosa Roberto Tortora",
+          descripcion: "Aquí vivió Roberto Fernando Tortora, secuestrado el 27-04-77",
+          // Ubicación de ejemplo - deberías reemplazar con coordenadas reales
+          lat: -34.6037,
+          lng: -58.3816
+        }
+      };
+
+      function updateLocationInfo() {
+        const locationP = document.getElementById('info-location');
+        if (userLocation && locationP) {
+          locationP.textContent = `📍 Tu ubicación: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+        }
+      }
+
+      // Evento cuando se detecta una baldosa
+      const sceneEl = document.querySelector('a-scene');
+      
+      sceneEl.addEventListener('loaded', () => {
+        document.getElementById('loading').style.display = 'none';
+        console.log('Escena AR cargada');
+      });
+
+      // Detectar cuando se encuentra un target
+      document.addEventListener('DOMContentLoaded', () => {
+        const targets = document.querySelectorAll('[mindar-image-target]');
+        
+        targets.forEach((target, index) => {
+          target.addEventListener('targetFound', event => {
+            console.log(`Baldosa ${index} detectada!`);
+            const infoPanel = document.getElementById('info-panel');
+            const infoTitle = document.getElementById('info-title');
+            const infoText = document.getElementById('info-text');
+            
+            if (baldosasDB[index]) {
+              infoTitle.textContent = baldosasDB[index].nombre;
+              infoText.textContent = baldosasDB[index].descripcion;
+              infoPanel.style.display = 'block';
+            }
+          });
+          
+          target.addEventListener('targetLost', event => {
+            console.log(`Baldosa ${index} perdida`);
+            document.getElementById('info-panel').style.display = 'none';
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
