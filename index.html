@@ -169,30 +169,30 @@
         </a-text>
       </a-entity>
     </a-scene>
-
+    
 <script>
   // ==================== CONFIGURACIÓN ====================
-  const RADIO_PERMITIDO = 50; // metros (5-10 metros como solicitaste)
+  const RADIO_PERMITIDO = 50; // metros
   const TIEMPO_TIMEOUT_GPS = 10000; // 10 segundos para obtener ubicación
   
   // ==================== VARIABLES GLOBALES ====================
   let userLocation = null;
   let ubicacionObtenida = false;
-  let targetesDetectados = {}; // Para controlar que se valide solo una vez por target
+  let targetsValidados = {}; // Almacena si cada target fue validado exitosamente
 
   // ==================== BASE DE DATOS ====================
   const baldosasDB = {
     0: {
       nombre: "Baldosa Nélida Ardito y Martha Brea",
       descripcion: "Aquí trabajaron Militantes Populares detenidas desaparecidas",
-      // Ubicación de ejemplo - Cadiz
+      // ⚠️ REEMPLAZA CON COORDENADAS REALES
       lat: -34.6037,
       lng: -58.3816
     },
     1: {
       nombre: "Baldosa Roberto Tortora",
       descripcion: "Aquí vivió Roberto Fernando Tortora, secuestrado el 27-04-77",
-      // Ubicación de ejemplo - La Pampa
+      // ⚠️ REEMPLAZA CON COORDENADAS REALES
       lat: -34.57590,
       lng: -58.47356
     }
@@ -200,11 +200,8 @@
 
   // ==================== UTILIDADES ====================
   
-  /**
-   * Calcular distancia entre dos puntos GPS (fórmula de Haversine)
-   */
   function calcularDistancia(lat1, lng1, lat2, lng2) {
-    const R = 6371e3; // Radio de la Tierra en metros
+    const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -215,12 +212,9 @@
       Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c; // en metros
+    return R * c;
   }
 
-  /**
-   * Mostrar notificación toast
-   */
   function mostrarNotificacion(mensaje, tipo = 'info', duracion = 4000) {
     const colores = {
       info: '#2196F3',
@@ -249,20 +243,6 @@
     `;
     toast.textContent = mensaje;
 
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateX(-50%) translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(-50%) translateY(0);
-        }
-      }
-    `;
-    document.head.appendChild(style);
     document.body.appendChild(toast);
 
     setTimeout(() => {
@@ -272,36 +252,19 @@
     }, duracion);
   }
 
-  /**
-   * Ocultar todo el contenido AR de un target
-   */
-  function ocultarContenidoAR(targetElement) {
-    // Ocultar todos los hijos del target
-    const children = targetElement.querySelectorAll('a-plane, a-text, a-image, a-box, a-sphere, a-cylinder');
-    children.forEach(child => {
-      child.setAttribute('visible', false);
-    });
-  }
-
-  /**
-   * Mostrar todo el contenido AR de un target
-   */
-  function mostrarContenidoAR(targetElement) {
-    const children = targetElement.querySelectorAll('a-plane, a-text, a-image, a-box, a-sphere, a-cylinder');
-    children.forEach(child => {
-      child.setAttribute('visible', true);
-    });
+  function updateLocationInfo() {
+    const locationP = document.getElementById('info-location');
+    if (userLocation && locationP) {
+      locationP.textContent = `📍 Tu ubicación: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)} (±${Math.round(userLocation.accuracy)}m)`;
+    }
   }
 
   // ==================== GEOLOCALIZACIÓN ====================
   
-  /**
-   * Obtener ubicación del usuario con manejo de errores
-   */
   function obtenerUbicacion() {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        reject(new Error('Geolocalización no disponible en este navegador'));
+        reject(new Error('Geolocalización no disponible'));
         return;
       }
 
@@ -347,23 +310,10 @@
     });
   }
 
-  /**
-   * Actualizar info de ubicación en el panel
-   */
-  function updateLocationInfo() {
-    const locationP = document.getElementById('info-location');
-    if (userLocation && locationP) {
-      locationP.textContent = `📍 Tu ubicación: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)} (±${Math.round(userLocation.accuracy)}m)`;
-    }
-  }
-
-  /**
-   * Validar si el usuario está dentro del radio permitido
-   */
   function validarProximidad(targetIndex) {
     if (!userLocation) {
       console.warn('⚠️ Ubicación del usuario no disponible');
-      mostrarNotificacion('No se pudo obtener tu ubicación GPS', 'error');
+      mostrarNotificacion('Obteniendo ubicación GPS...', 'warning');
       return false;
     }
 
@@ -380,20 +330,22 @@
       baldosa.lng
     );
 
-    console.log(`📏 Distancia a baldosa ${targetIndex}: ${Math.round(distancia)}m`);
+    console.log(`\n📏 ===== VALIDACIÓN BALDOSA ${targetIndex} =====`);
     console.log(`📍 Usuario: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`);
     console.log(`📍 Baldosa: ${baldosa.lat.toFixed(6)}, ${baldosa.lng.toFixed(6)}`);
-    console.log(`🎯 Precisión GPS: ±${Math.round(userLocation.accuracy)}m`);
+    console.log(`📏 Distancia: ${Math.round(distancia)}m`);
+    console.log(`🎯 Radio permitido: ${RADIO_PERMITIDO}m`);
+    console.log(`📶 Precisión GPS: ±${Math.round(userLocation.accuracy)}m`);
 
     if (distancia <= RADIO_PERMITIDO) {
-      console.log(`✅ ¡Usuario dentro del radio! (${Math.round(distancia)}m <= ${RADIO_PERMITIDO}m)`);
+      console.log(`✅ VALIDACIÓN EXITOSA: ${Math.round(distancia)}m <= ${RADIO_PERMITIDO}m`);
       mostrarNotificacion(`✅ Ubicación verificada (${Math.round(distancia)}m)`, 'success', 3000);
       return true;
     } else {
-      console.log(`❌ Usuario fuera del radio (${Math.round(distancia)}m > ${RADIO_PERMITIDO}m)`);
+      console.log(`❌ VALIDACIÓN FALLIDA: ${Math.round(distancia)}m > ${RADIO_PERMITIDO}m`);
       const metros = Math.round(distancia);
       mostrarNotificacion(
-        `⛔ Debes estar a menos de ${RADIO_PERMITIDO}m de la baldosa. Distancia actual: ${metros}m`,
+        `⛔ Muy lejos: ${metros}m (máx: ${RADIO_PERMITIDO}m)`,
         'error',
         5000
       );
@@ -401,9 +353,30 @@
     }
   }
 
+  // ==================== CONTROL DE VISIBILIDAD AR ====================
+  
+  function ocultarTargetAR(targetIndex) {
+    console.log(`🚫 Ocultando AR del target ${targetIndex}`);
+    const target = document.querySelector(`[mindar-image-target="targetIndex: ${targetIndex}"]`);
+    if (target) {
+      // Ocultar usando el atributo visible de A-Frame
+      target.setAttribute('visible', false);
+      console.log(`✓ Target ${targetIndex} oculto`);
+    }
+  }
+
+  function mostrarTargetAR(targetIndex) {
+    console.log(`✨ Mostrando AR del target ${targetIndex}`);
+    const target = document.querySelector(`[mindar-image-target="targetIndex: ${targetIndex}"]`);
+    if (target) {
+      // Mostrar usando el atributo visible de A-Frame
+      target.setAttribute('visible', true);
+      console.log(`✓ Target ${targetIndex} visible`);
+    }
+  }
+
   // ==================== INICIALIZACIÓN ====================
   
-  // Solicitar ubicación al cargar
   console.log('🔄 Solicitando ubicación GPS...');
   mostrarNotificacion('📍 Obteniendo tu ubicación...', 'info', 2000);
   
@@ -413,20 +386,25 @@
     })
     .catch((error) => {
       console.error('Error inicial de geolocalización:', error);
-      mostrarNotificacion('⚠️ ' + error.message + '. Recarga la página.', 'warning', 5000);
+      mostrarNotificacion('⚠️ ' + error.message, 'warning', 5000);
     });
 
   // ==================== EVENTOS AR ====================
   
   const sceneEl = document.querySelector('a-scene');
   
-  // Cuando la escena carga
   sceneEl.addEventListener('loaded', () => {
     document.getElementById('loading').style.display = 'none';
     console.log('✅ Escena AR cargada');
+    
+    // Ocultar todos los targets inicialmente
+    const allTargets = document.querySelectorAll('[mindar-image-target]');
+    allTargets.forEach((target, idx) => {
+      target.setAttribute('visible', false);
+      console.log(`🔒 Target ${idx} oculto inicialmente`);
+    });
   });
 
-  // Configurar eventos de detección
   document.addEventListener('DOMContentLoaded', () => {
     const targets = document.querySelectorAll('[mindar-image-target]');
     
@@ -436,20 +414,14 @@
       target.addEventListener('targetFound', event => {
         console.log(`\n🎯 ===== BALDOSA ${index} DETECTADA =====`);
         
-        // Verificar si ya validamos este target en esta sesión
-        if (targetesDetectados[index]) {
-          console.log('ℹ️ Target ya validado previamente');
-          return;
-        }
-
-        // Ocultar AR por defecto
-        ocultarContenidoAR(target);
-
-        // Validar proximidad
-        if (validarProximidad(index)) {
+        // Validar proximidad SIEMPRE que se detecte (no solo la primera vez)
+        const estaValidado = validarProximidad(index);
+        
+        if (estaValidado) {
           // ✅ Usuario está cerca - Mostrar AR
-          mostrarContenidoAR(target);
-          targetesDetectados[index] = true;
+          console.log(`🟢 Mostrando contenido AR para target ${index}`);
+          mostrarTargetAR(index);
+          targetsValidados[index] = true;
           
           // Actualizar panel informativo
           const infoPanel = document.getElementById('info-panel');
@@ -461,20 +433,21 @@
             infoText.textContent = baldosasDB[index].descripcion;
             infoPanel.style.display = 'block';
           }
-          
-          console.log('✨ Contenido AR mostrado');
         } else {
-          // ❌ Usuario está lejos - No mostrar AR
-          console.log('🚫 Contenido AR bloqueado por distancia');
+          // ❌ Usuario está lejos - NO mostrar AR
+          console.log(`🔴 Bloqueando contenido AR para target ${index}`);
+          ocultarTargetAR(index);
           
-          // Opcional: Mostrar panel informativo con mensaje de error
+          // Mostrar panel con mensaje de error
           const infoPanel = document.getElementById('info-panel');
           const infoTitle = document.getElementById('info-title');
           const infoText = document.getElementById('info-text');
           
-          infoTitle.textContent = '⛔ Muy lejos de la baldosa';
-          infoText.textContent = `Acércate más para ver el contenido AR`;
-          infoPanel.style.display = 'block';
+          if (baldosasDB[index]) {
+            infoTitle.textContent = '⛔ ' + baldosasDB[index].nombre;
+            infoText.textContent = `Debes estar a menos de ${RADIO_PERMITIDO}m para ver el contenido`;
+            infoPanel.style.display = 'block';
+          }
         }
       });
       
@@ -482,16 +455,25 @@
       target.addEventListener('targetLost', event => {
         console.log(`👋 Baldosa ${index} perdida`);
         document.getElementById('info-panel').style.display = 'none';
+        // Volver a ocultar cuando se pierde el target
+        ocultarTargetAR(index);
       });
     });
   });
 
-  // Actualizar ubicación periódicamente (cada 5 segundos)
+  // Actualizar ubicación periódicamente
   setInterval(() => {
     if (ubicacionObtenida) {
       obtenerUbicacion().catch(err => console.warn('Error actualizando ubicación:', err));
     }
   }, 5000);
+  
+  // Reintentar obtener ubicación si falló inicialmente
+  setTimeout(() => {
+    if (!ubicacionObtenida) {
+      console.log('🔄 Reintentando obtener ubicación...');
+      obtenerUbicacion().catch(err => console.error('Reintento fallido:', err));
+    }
+  }, 3000);
 </script>
-  </body>
-</html>
+    
